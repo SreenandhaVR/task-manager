@@ -41,24 +41,30 @@ export default function Login() {
     setError('')
     setLoading(true)
 
-try {
-  if (isRegister) {
-    await api.post('/auth/register', { email, password })
-    setIsRegister(false)
-    setError('')
-    setEmail('')
-    setPassword('')
-    alert('Account created! Please sign in now.')
-    return
-  }
+    try {
+      if (isRegister) {
+        await api.post('/auth/register', { email, password })
+        setIsRegister(false)
+        setError('')
+        setEmail('')
+        setPassword('')
+        alert('Account created! Please sign in now.')
+        return
+      }
 
-  const form = new URLSearchParams()
-  form.append('username', email)
-  form.append('password', password)
+      const res = await api.post(
+        '/auth/login',
+        `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+      )
 
-  const res = await api.post('/auth/login', form)
-  setToken(res.data.access_token)
-  navigate('/')
+      setToken(res.data.access_token)
+      navigate('/')
+
     } catch (err) {
       const detail = err.response?.data?.detail
       if (Array.isArray(detail)) {
