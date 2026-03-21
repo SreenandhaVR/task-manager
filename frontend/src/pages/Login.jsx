@@ -47,6 +47,39 @@ export default function Login() {
     {error}
   </div>
 )}
+<form onSubmit={handleSubmit} style={{
+  display: 'flex', flexDirection: 'column', gap: '16px'
+}}>
+
+  <div>
+    <label style={labelStyle}>Email</label>
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder="you@example.com"
+      required
+      style={inputStyle}
+      onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
+      onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
+    />
+  </div>
+
+  <div>
+    <label style={labelStyle}>Password</label>
+    <input
+      type="password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="••••••••"
+      required
+      style={inputStyle}
+      onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
+      onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
+    />
+  </div>
+
+</form>
 const inputStyle = {
   width: '100%',
   padding: '11px 14px',
