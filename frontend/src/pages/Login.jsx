@@ -2,198 +2,212 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import useAuthStore from '../store/authStore'
-const [isRegister, setIsRegister] = useState(false)
-const [email, setEmail] = useState('')
-const [password, setPassword] = useState('')
-const [error, setError] = useState('')
-const [loading, setLoading] = useState(false)
-const handleSubmit = async (e) => {
-  e.preventDefault()
-  setError('')
-  setLoading(true)
-
-  try {
-    if (isRegister) {
-      await api.post('/auth/register', { email, password })
-    }
-
-    const form = new URLSearchParams()
-    form.append('username', email)
-    form.append('password', password)
-
-    const res = await api.post('/auth/login', form)
-    setToken(res.data.access_token)
-    navigate('/')
-
-  } catch (err) {
-    setError(err.response?.data?.detail || 'Something went wrong')
-  } finally {
-    setLoading(false)
-  }
-}
 
 export default function Login() {
-{error && (
-  <div style={{
-    background: 'rgba(239,68,68,0.08)',
-    border: '1px solid rgba(239,68,68,0.2)',
-    borderRadius: '8px',
-    padding: '10px 14px',
-    marginBottom: '16px',
-    fontSize: '13px',
-    color: '#ef4444',
-    fontWeight: '500'
-  }}>
-    {error}
-  </div>
-)}
-<form onSubmit={handleSubmit} style={{
-  display: 'flex', flexDirection: 'column', gap: '16px'
-}}>
+  const [isRegister, setIsRegister] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  <div>
-    <label style={labelStyle}>Email</label>
-    <input
-      type="email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      placeholder="you@example.com"
-      required
-      style={inputStyle}
-      onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
-      onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
-    />
-  </div>
+  const setToken = useAuthStore((s) => s.setToken)
+  const navigate = useNavigate()
 
-  <div>
-    <label style={labelStyle}>Password</label>
-    <input
-      type="password"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      placeholder="••••••••"
-      required
-      style={inputStyle}
-      onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
-      onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
-    />
-  </div>
-<button
-  type="submit"
-  disabled={loading}
-  style={{
-    width: '100%', padding: '12px',
-    background: 'linear-gradient(135deg, #5b3db5, #7c5cbf)',
-    border: 'none', borderRadius: '10px',
-    color: '#e8e8e8', fontSize: '14px',
-    fontWeight: '600',
-    cursor: loading ? 'not-allowed' : 'pointer',
-    marginTop: '4px',
-    opacity: loading ? 0.7 : 1,
-    transition: 'opacity 0.2s, transform 0.15s',
-    fontFamily: "'DM Sans', sans-serif"
-  }}
-  onMouseEnter={(e) => { if (!loading) e.target.style.opacity = '0.88' }}
-  onMouseLeave={(e) => { if (!loading) e.target.style.opacity = '1' }}
->
-  {loading
-    ? (isRegister ? 'Creating account...' : 'Signing in...')
-    : (isRegister ? 'Create Account' : 'Sign In')
-  }
-</button>
-</form>
-<div style={{
-  display: 'flex', alignItems: 'center',
-  gap: '12px', margin: '24px 0'
-}}>
-  <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
-  <span style={{ color: '#333', fontSize: '12px' }}>or</span>
-  <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
-</div>
-
-<p style={{ textAlign: 'center', fontSize: '13px', color: '#444' }}>
-  {isRegister ? 'Already have an account? ' : "Don't have an account? "}
-  <span
-    onClick={() => {
-      setIsRegister(!isRegister)
-      setError('')
-      setEmail('')
-      setPassword('')
-    }}
-    style={{ color: '#8b6cf0', cursor: 'pointer', fontWeight: '500' }}
-  >
-    {isRegister ? 'Sign In' : 'Register'}
-  </span>
-</p>
-const inputStyle = {
-  width: '100%',
-  padding: '11px 14px',
-  background: '#0d0d0d',
-  border: '1px solid #1e1e1e',
-  borderRadius: '10px',
-  color: '#d0d0d0',
-  fontSize: '14px',
-  outline: 'none',
-  boxSizing: 'border-box',
-  fontFamily: "'DM Sans', sans-serif"
-}
-
-const labelStyle = {
-  display: 'block',
-  fontSize: '12px',
-  color: '#444',
-  marginBottom: '7px',
-  fontWeight: '500',
-  letterSpacing: '0.3px',
-  textTransform: 'uppercase'
-}
-return (
-  <div style={{
-    minHeight: '100vh',
+  const inputStyle = {
+    width: '100%',
+    padding: '11px 14px',
     background: '#0d0d0d',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    border: '1px solid #1e1e1e',
+    borderRadius: '10px',
+    color: '#d0d0d0',
+    fontSize: '14px',
+    outline: 'none',
+    boxSizing: 'border-box',
     fontFamily: "'DM Sans', sans-serif"
-  }}>
+  }
 
-    <div style={{
-      position: 'fixed', inset: 0,
-      background: 'radial-gradient(ellipse at 50% 0%, rgba(100,80,200,0.06) 0%, transparent 60%)',
-      pointerEvents: 'none'
-    }} />
+  const labelStyle = {
+    display: 'block',
+    fontSize: '12px',
+    color: '#444',
+    marginBottom: '7px',
+    fontWeight: '500',
+    letterSpacing: '0.3px',
+    textTransform: 'uppercase'
+  }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      if (isRegister) {
+        await api.post('/auth/register', { email, password })
+      }
+
+      const form = new URLSearchParams()
+      form.append('username', email)
+      form.append('password', password)
+
+      const res = await api.post('/auth/login', form)
+      setToken(res.data.access_token)
+      navigate('/')
+
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
     <div style={{
-      width: '100%', maxWidth: '400px',
-      padding: '48px 40px',
-      background: '#111111',
-      border: '1px solid #1e1e1e',
-      borderRadius: '20px',
-      position: 'relative', zIndex: 1
+      minHeight: '100vh',
+      background: '#0d0d0d',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: "'DM Sans', sans-serif"
     }}>
 
-      <div style={{ marginBottom: '32px' }}>
+      <div style={{
+        position: 'fixed', inset: 0,
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(100,80,200,0.06) 0%, transparent 60%)',
+        pointerEvents: 'none'
+      }} />
+
+      <div style={{
+        width: '100%', maxWidth: '400px',
+        padding: '48px 40px',
+        background: '#111111',
+        border: '1px solid #1e1e1e',
+        borderRadius: '20px',
+        position: 'relative', zIndex: 1
+      }}>
+
+        {/* logo */}
+        <div style={{ marginBottom: '32px' }}>
+          <div style={{
+            display: 'flex', alignItems: 'center',
+            gap: '10px', marginBottom: '10px'
+          }}>
+            <div style={{
+              width: '30px', height: '30px',
+              background: 'linear-gradient(135deg, #6c47c9, #8b5cf6)',
+              borderRadius: '8px', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+              fontSize: '14px'
+            }}>⚡</div>
+            <span style={{
+              fontSize: '18px', fontWeight: '700',
+              fontFamily: "'Syne', sans-serif",
+              color: '#e8e8e8', letterSpacing: '-0.3px'
+            }}>TaskFlow</span>
+          </div>
+          <p style={{ color: '#555', fontSize: '13px' }}>
+            {isRegister ? 'Create a new account' : 'Sign in to your workspace'}
+          </p>
+        </div>
+
+        {/* error */}
+        {error && (
+          <div style={{
+            background: 'rgba(239,68,68,0.08)',
+            border: '1px solid rgba(239,68,68,0.2)',
+            borderRadius: '8px', padding: '10px 14px',
+            marginBottom: '16px', fontSize: '13px',
+            color: '#ef4444', fontWeight: '500'
+          }}>
+            {error}
+          </div>
+        )}
+
+        {/* form */}
+        <form onSubmit={handleSubmit} style={{
+          display: 'flex', flexDirection: 'column', gap: '16px'
+        }}>
+
+          <div>
+            <label style={labelStyle}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              style={inputStyle}
+              onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
+              onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              style={inputStyle}
+              onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
+              onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%', padding: '12px',
+              background: 'linear-gradient(135deg, #5b3db5, #7c5cbf)',
+              border: 'none', borderRadius: '10px',
+              color: '#e8e8e8', fontSize: '14px',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              marginTop: '4px',
+              opacity: loading ? 0.7 : 1,
+              fontFamily: "'DM Sans', sans-serif"
+            }}
+            onMouseEnter={(e) => { if (!loading) e.target.style.opacity = '0.88' }}
+            onMouseLeave={(e) => { if (!loading) e.target.style.opacity = '1' }}
+          >
+            {loading
+              ? (isRegister ? 'Creating account...' : 'Signing in...')
+              : (isRegister ? 'Create Account' : 'Sign In')
+            }
+          </button>
+
+        </form>
+
+        {/* divider */}
         <div style={{
           display: 'flex', alignItems: 'center',
-          gap: '10px', marginBottom: '10px'
+          gap: '12px', margin: '24px 0'
         }}>
-          <div style={{
-            width: '30px', height: '30px',
-            background: 'linear-gradient(135deg, #6c47c9, #8b5cf6)',
-            borderRadius: '8px', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', fontSize: '14px'
-          }}>⚡</div>
-          <span style={{
-            fontSize: '18px', fontWeight: '700',
-            fontFamily: "'Syne', sans-serif",
-            color: '#e8e8e8', letterSpacing: '-0.3px'
-          }}>TaskFlow</span>
+          <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
+          <span style={{ color: '#333', fontSize: '12px' }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
         </div>
-        <p style={{ color: '#555', fontSize: '13px' }}>
-          {isRegister ? 'Create a new account' : 'Sign in to your workspace'}
-        </p>
-      </div>
 
+        {/* toggle */}
+        <p style={{ textAlign: 'center', fontSize: '13px', color: '#444' }}>
+          {isRegister ? 'Already have an account? ' : "Don't have an account? "}
+          <span
+            onClick={() => {
+              setIsRegister(!isRegister)
+              setError('')
+              setEmail('')
+              setPassword('')
+            }}
+            style={{ color: '#8b6cf0', cursor: 'pointer', fontWeight: '500' }}
+          >
+            {isRegister ? 'Sign In' : 'Register'}
+          </span>
+        </p>
+
+      </div>
     </div>
-  </div>
-)
+  )
+}
