@@ -102,6 +102,29 @@ export default function Login() {
   }
 </button>
 </form>
+<div style={{
+  display: 'flex', alignItems: 'center',
+  gap: '12px', margin: '24px 0'
+}}>
+  <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
+  <span style={{ color: '#333', fontSize: '12px' }}>or</span>
+  <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
+</div>
+
+<p style={{ textAlign: 'center', fontSize: '13px', color: '#444' }}>
+  {isRegister ? 'Already have an account? ' : "Don't have an account? "}
+  <span
+    onClick={() => {
+      setIsRegister(!isRegister)
+      setError('')
+      setEmail('')
+      setPassword('')
+    }}
+    style={{ color: '#8b6cf0', cursor: 'pointer', fontWeight: '500' }}
+  >
+    {isRegister ? 'Sign In' : 'Register'}
+  </span>
+</p>
 const inputStyle = {
   width: '100%',
   padding: '11px 14px',
