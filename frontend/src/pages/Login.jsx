@@ -41,21 +41,31 @@ export default function Login() {
     setError('')
     setLoading(true)
 
-    try {
-      if (isRegister) {
-        await api.post('/auth/register', { email, password })
-      }
+try {
+  if (isRegister) {
+    await api.post('/auth/register', { email, password })
+    setIsRegister(false)
+    setError('')
+    setEmail('')
+    setPassword('')
+    alert('Account created! Please sign in now.')
+    return
+  }
 
-      const form = new URLSearchParams()
-      form.append('username', email)
-      form.append('password', password)
+  const form = new URLSearchParams()
+  form.append('username', email)
+  form.append('password', password)
 
-      const res = await api.post('/auth/login', form)
-      setToken(res.data.access_token)
-      navigate('/')
-
+  const res = await api.post('/auth/login', form)
+  setToken(res.data.access_token)
+  navigate('/')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Something went wrong')
+      const detail = err.response?.data?.detail
+      if (Array.isArray(detail)) {
+        setError(detail.map((d) => d.msg).join(', '))
+      } else {
+        setError(detail || 'Something went wrong')
+      }
     } finally {
       setLoading(false)
     }
