@@ -46,5 +46,27 @@ export default function Login() {
     {error}
   </div>
 )}
+const inputStyle = {
+  width: '100%',
+  padding: '11px 14px',
+  background: '#0d0d0d',
+  border: '1px solid #1e1e1e',
+  borderRadius: '10px',
+  color: '#d0d0d0',
+  fontSize: '14px',
+  outline: 'none',
+  boxSizing: 'border-box',
+  fontFamily: "'DM Sans', sans-serif"
+}
+
+const labelStyle = {
+  display: 'block',
+  fontSize: '12px',
+  color: '#444',
+  marginBottom: '7px',
+  fontWeight: '500',
+  letterSpacing: '0.3px',
+  textTransform: 'uppercase'
+}
   return <div style={{ color: 'white' }}>Login Page</div>
 }
