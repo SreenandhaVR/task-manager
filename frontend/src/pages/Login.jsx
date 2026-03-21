@@ -78,7 +78,29 @@ export default function Login() {
       onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
     />
   </div>
-
+<button
+  type="submit"
+  disabled={loading}
+  style={{
+    width: '100%', padding: '12px',
+    background: 'linear-gradient(135deg, #5b3db5, #7c5cbf)',
+    border: 'none', borderRadius: '10px',
+    color: '#e8e8e8', fontSize: '14px',
+    fontWeight: '600',
+    cursor: loading ? 'not-allowed' : 'pointer',
+    marginTop: '4px',
+    opacity: loading ? 0.7 : 1,
+    transition: 'opacity 0.2s, transform 0.15s',
+    fontFamily: "'DM Sans', sans-serif"
+  }}
+  onMouseEnter={(e) => { if (!loading) e.target.style.opacity = '0.88' }}
+  onMouseLeave={(e) => { if (!loading) e.target.style.opacity = '1' }}
+>
+  {loading
+    ? (isRegister ? 'Creating account...' : 'Signing in...')
+    : (isRegister ? 'Create Account' : 'Sign In')
+  }
+</button>
 </form>
 const inputStyle = {
   width: '100%',
