@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.database import get_db
 from app.models import User
-from app.schemas import UserRegister, UserLogin, UserOut, Token
+from app.schemas import UserRegister, UserOut, Token
 from app.auth import hash_password, verify_password, create_access_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -30,13 +31,16 @@ async def register(data: UserRegister, db: AsyncSession = Depends(get_db)):
     return new_user
 
 
+# Changed to OAuth2PasswordRequestForm so Authorize button works in docs
 @router.post("/login", response_model=Token)
-async def login(data: UserLogin, db: AsyncSession = Depends(get_db)):
-
-    result = await db.execute(select(User).where(User.email == data.email))
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(select(User).where(User.email == form_data.username))
     user = result.scalar_one_or_none()
 
-    if not user or not verify_password(data.password, user.password_hash):
+    if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token(data={"sub": str(user.id)})

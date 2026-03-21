@@ -1,11 +1,13 @@
 from fastapi import FastAPI
-from app.routers import auth
+from app.routers import auth, tasks, notes
 from app.database import engine, Base
 from app import models
 
 app = FastAPI()
 
 app.include_router(auth.router)
+app.include_router(tasks.router)
+app.include_router(notes.router)
 
 
 @app.on_event("startup")
