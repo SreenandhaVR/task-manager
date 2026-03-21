@@ -68,5 +68,53 @@ const labelStyle = {
   letterSpacing: '0.3px',
   textTransform: 'uppercase'
 }
-  return <div style={{ color: 'white' }}>Login Page</div>
-}
+return (
+  <div style={{
+    minHeight: '100vh',
+    background: '#0d0d0d',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontFamily: "'DM Sans', sans-serif"
+  }}>
+
+    <div style={{
+      position: 'fixed', inset: 0,
+      background: 'radial-gradient(ellipse at 50% 0%, rgba(100,80,200,0.06) 0%, transparent 60%)',
+      pointerEvents: 'none'
+    }} />
+
+    <div style={{
+      width: '100%', maxWidth: '400px',
+      padding: '48px 40px',
+      background: '#111111',
+      border: '1px solid #1e1e1e',
+      borderRadius: '20px',
+      position: 'relative', zIndex: 1
+    }}>
+
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center',
+          gap: '10px', marginBottom: '10px'
+        }}>
+          <div style={{
+            width: '30px', height: '30px',
+            background: 'linear-gradient(135deg, #6c47c9, #8b5cf6)',
+            borderRadius: '8px', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', fontSize: '14px'
+          }}>⚡</div>
+          <span style={{
+            fontSize: '18px', fontWeight: '700',
+            fontFamily: "'Syne', sans-serif",
+            color: '#e8e8e8', letterSpacing: '-0.3px'
+          }}>TaskFlow</span>
+        </div>
+        <p style={{ color: '#555', fontSize: '13px' }}>
+          {isRegister ? 'Create a new account' : 'Sign in to your workspace'}
+        </p>
+      </div>
+
+    </div>
+  </div>
+)
