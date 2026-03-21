@@ -17,4 +17,13 @@ async def create_note(task_id: int, data: NoteCreate, db: AsyncSession = Depends
     task = result.scalar_one_or_none()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    note = TaskNote(**
+    note = TaskNote(**data.model_dump(), task_id=task_id)
+    db.add(note)
+    await db.commit()
+    await db.refresh(note)
+    return note
+
+@router.get("/", response_model=List[NoteOut])
+async def get_notes(task_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    result = await db.execute(select(TaskNote).where(TaskNote.task_id == task_id))
+    return result.scalars().all()
