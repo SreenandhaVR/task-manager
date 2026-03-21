@@ -13,59 +13,66 @@ export default function Login() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#0a0a0f',
+      background: '#0d0d0d',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: "'DM Sans', sans-serif"
+      fontFamily: "'DM Sans', sans-serif",
     }}>
 
+      {/* subtle background */}
       <div style={{
-        position: 'fixed', top: '20%', left: '50%',
-        transform: 'translateX(-50%)',
-        width: '600px', height: '600px',
-        background: 'radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)',
+        position: 'fixed', inset: 0,
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(100,80,200,0.06) 0%, transparent 60%)',
         pointerEvents: 'none'
       }} />
 
       <div style={{
-        width: '100%', maxWidth: '420px',
-        background: 'rgba(17,17,24,0.9)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        borderRadius: '16px', padding: '40px',
-        backdropFilter: 'blur(12px)',
+        width: '100%', maxWidth: '400px',
+        padding: '48px 40px',
+        background: '#111111',
+        border: '1px solid #1e1e1e',
+        borderRadius: '20px',
         position: 'relative', zIndex: 1
       }}>
 
-        <div style={{ marginBottom: '32px', textAlign: 'center' }}>
+        {/* Logo */}
+        <div style={{ marginBottom: '36px' }}>
           <div style={{
-            display: 'inline-flex', alignItems: 'center',
-            gap: '10px', marginBottom: '8px'
+            display: 'flex', alignItems: 'center',
+            gap: '8px', marginBottom: '6px'
           }}>
             <div style={{
-              width: '32px', height: '32px',
-              background: 'linear-gradient(135deg, #7c3aed, #9d5cf6)',
-              borderRadius: '8px', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', fontSize: '16px'
+              width: '28px', height: '28px',
+              background: 'linear-gradient(135deg, #6c47c9, #8b5cf6)',
+              borderRadius: '7px',
+              display: 'flex', alignItems: 'center',
+              justifyContent: 'center', fontSize: '13px'
             }}>⚡</div>
             <span style={{
-              fontSize: '20px', fontWeight: '700',
-              fontFamily: "'Syne', sans-serif", color: '#f0f0f5'
+              fontSize: '17px', fontWeight: '700',
+              fontFamily: "'Syne', sans-serif",
+              color: '#e8e8e8', letterSpacing: '-0.3px'
             }}>TaskFlow</span>
           </div>
-          <p style={{ color: '#8b8b9a', fontSize: '14px' }}>
-            {isRegister ? 'Create your account' : 'Welcome back'}
+          <p style={{
+            color: '#555', fontSize: '13px', marginTop: '10px'
+          }}>
+            {isRegister ? 'Create a new account' : 'Sign in to your workspace'}
           </p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} style={{
-          display: 'flex', flexDirection: 'column', gap: '16px'
+          display: 'flex', flexDirection: 'column', gap: '14px'
         }}>
 
           <div>
             <label style={{
-              display: 'block', fontSize: '13px',
-              color: '#8b8b9a', marginBottom: '8px', fontWeight: '500'
+              display: 'block', fontSize: '12px',
+              color: '#444', marginBottom: '7px',
+              fontWeight: '500', letterSpacing: '0.3px',
+              textTransform: 'uppercase'
             }}>Email</label>
             <input
               type="email"
@@ -74,21 +81,25 @@ export default function Login() {
               placeholder="you@example.com"
               required
               style={{
-                width: '100%', padding: '12px 16px',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '10px', color: '#f0f0f5',
-                fontSize: '14px', outline: 'none', boxSizing: 'border-box'
+                width: '100%', padding: '11px 14px',
+                background: '#0d0d0d',
+                border: '1px solid #1e1e1e',
+                borderRadius: '10px', color: '#d0d0d0',
+                fontSize: '14px', outline: 'none',
+                boxSizing: 'border-box',
+                transition: 'border 0.2s'
               }}
-              onFocus={(e) => e.target.style.border = '1px solid rgba(124,58,237,0.6)'}
-              onBlur={(e) => e.target.style.border = '1px solid rgba(255,255,255,0.08)'}
+              onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
+              onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
             />
           </div>
 
           <div>
             <label style={{
-              display: 'block', fontSize: '13px',
-              color: '#8b8b9a', marginBottom: '8px', fontWeight: '500'
+              display: 'block', fontSize: '12px',
+              color: '#444', marginBottom: '7px',
+              fontWeight: '500', letterSpacing: '0.3px',
+              textTransform: 'uppercase'
             }}>Password</label>
             <input
               type="password"
@@ -97,43 +108,66 @@ export default function Login() {
               placeholder="••••••••"
               required
               style={{
-                width: '100%', padding: '12px 16px',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '10px', color: '#f0f0f5',
-                fontSize: '14px', outline: 'none', boxSizing: 'border-box'
+                width: '100%', padding: '11px 14px',
+                background: '#0d0d0d',
+                border: '1px solid #1e1e1e',
+                borderRadius: '10px', color: '#d0d0d0',
+                fontSize: '14px', outline: 'none',
+                boxSizing: 'border-box',
+                transition: 'border 0.2s'
               }}
-              onFocus={(e) => e.target.style.border = '1px solid rgba(124,58,237,0.6)'}
-              onBlur={(e) => e.target.style.border = '1px solid rgba(255,255,255,0.08)'}
+              onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
+              onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
             />
           </div>
 
           <button
             type="submit"
             style={{
-              width: '100%', padding: '13px',
-              background: 'linear-gradient(135deg, #7c3aed, #9d5cf6)',
+              width: '100%', padding: '12px',
+              background: 'linear-gradient(135deg, #5b3db5, #7c5cbf)',
               border: 'none', borderRadius: '10px',
-              color: '#fff', fontSize: '15px', fontWeight: '600',
-              cursor: 'pointer', marginTop: '8px',
-              boxShadow: '0 0 20px rgba(124,58,237,0.3)'
+              color: '#e8e8e8', fontSize: '14px',
+              fontWeight: '600', cursor: 'pointer',
+              marginTop: '6px', letterSpacing: '0.2px',
+              transition: 'opacity 0.2s, transform 0.15s'
             }}
-            onMouseEnter={(e) => e.target.style.opacity = '0.9'}
-            onMouseLeave={(e) => e.target.style.opacity = '1'}
+            onMouseEnter={(e) => {
+              e.target.style.opacity = '0.88'
+              e.target.style.transform = 'translateY(-1px)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.opacity = '1'
+              e.target.style.transform = 'translateY(0)'
+            }}
           >
             {isRegister ? 'Create Account' : 'Sign In'}
           </button>
 
         </form>
 
+        {/* Divider */}
+        <div style={{
+          display: 'flex', alignItems: 'center',
+          gap: '12px', margin: '24px 0'
+        }}>
+          <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
+          <span style={{ color: '#333', fontSize: '12px' }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
+        </div>
+
+        {/* Toggle */}
         <p style={{
-          textAlign: 'center', marginTop: '24px',
-          fontSize: '14px', color: '#8b8b9a'
+          textAlign: 'center',
+          fontSize: '13px', color: '#444'
         }}>
           {isRegister ? 'Already have an account? ' : "Don't have an account? "}
           <span
             onClick={() => setIsRegister(!isRegister)}
-            style={{ color: '#9d5cf6', cursor: 'pointer', fontWeight: '500' }}
+            style={{
+              color: '#8b6cf0', cursor: 'pointer',
+              fontWeight: '500'
+            }}
           >
             {isRegister ? 'Sign In' : 'Register'}
           </span>
