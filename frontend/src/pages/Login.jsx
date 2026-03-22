@@ -16,24 +16,26 @@ export default function Login() {
   const inputStyle = {
     width: '100%',
     padding: '11px 14px',
-    background: '#0d0d0d',
-    border: '1px solid #1e1e1e',
+    background: '#f0f9ff',
+    border: '1px solid #bfdbfe',
     borderRadius: '10px',
-    color: '#d0d0d0',
-    fontSize: '14px',
+    color: '#111827',
+    fontSize: '13px',
     outline: 'none',
     boxSizing: 'border-box',
-    fontFamily: "'DM Sans', sans-serif"
+    fontFamily: "'Poppins', sans-serif",
+    transition: 'border 0.2s, background 0.2s',
   }
 
   const labelStyle = {
     display: 'block',
-    fontSize: '12px',
-    color: '#444',
-    marginBottom: '7px',
-    fontWeight: '500',
-    letterSpacing: '0.3px',
-    textTransform: 'uppercase'
+    fontSize: '11px',
+    color: '#6b7280',
+    marginBottom: '6px',
+    fontWeight: '600',
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+    fontFamily: "'Poppins', sans-serif",
   }
 
   const handleSubmit = async (e) => {
@@ -56,9 +58,7 @@ export default function Login() {
         '/auth/login',
         `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
         {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }
       )
 
@@ -80,69 +80,128 @@ export default function Login() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#0d0d0d',
+      background: '#bfdbfe',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: "'DM Sans', sans-serif"
+      fontFamily: "'Poppins', sans-serif",
+      position: 'relative',
+      overflow: 'hidden',
     }}>
 
+      {/* Decorative circle — top right */}
       <div style={{
-        position: 'fixed', inset: 0,
-        background: 'radial-gradient(ellipse at 50% 0%, rgba(100,80,200,0.06) 0%, transparent 60%)',
-        pointerEvents: 'none'
+        position: 'fixed',
+        top: '-100px',
+        right: '-100px',
+        width: '400px',
+        height: '400px',
+        borderRadius: '50%',
+        background: '#ffffff',
+        opacity: 0.3,
+        pointerEvents: 'none',
       }} />
 
+      {/* Decorative circle — bottom left */}
       <div style={{
-        width: '100%', maxWidth: '400px',
-        padding: '48px 40px',
-        background: '#111111',
-        border: '1px solid #1e1e1e',
+        position: 'fixed',
+        bottom: '-60px',
+        left: '-60px',
+        width: '250px',
+        height: '250px',
+        borderRadius: '50%',
+        background: '#ffffff',
+        opacity: 0.2,
+        pointerEvents: 'none',
+      }} />
+
+      {/* Card */}
+      <div style={{
+        width: '100%',
+        maxWidth: '440px',
+        padding: '40px',
+        background: '#ffffff',
+        border: '1px solid #e5e7eb',
         borderRadius: '20px',
-        position: 'relative', zIndex: 1
+        boxShadow: '0 8px 32px rgba(29,78,216,0.10)',
+        position: 'relative',
+        zIndex: 1,
       }}>
 
-        {/* logo */}
-        <div style={{ marginBottom: '32px' }}>
+        {/* Logo row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px' }}>
           <div style={{
-            display: 'flex', alignItems: 'center',
-            gap: '10px', marginBottom: '10px'
-          }}>
+            width: '44px',
+            height: '44px',
+            background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '20px',
+            color: '#ffffff',
+            flexShrink: 0,
+          }}>✦</div>
+          <div>
             <div style={{
-              width: '30px', height: '30px',
-              background: 'linear-gradient(135deg, #6c47c9, #8b5cf6)',
-              borderRadius: '8px', display: 'flex',
-              alignItems: 'center', justifyContent: 'center',
-              fontSize: '14px'
-            }}>⚡</div>
-            <span style={{
-              fontSize: '18px', fontWeight: '700',
-              fontFamily: "'Syne', sans-serif",
-              color: '#e8e8e8', letterSpacing: '-0.3px'
-            }}>TaskFlow</span>
+              fontSize: '18px',
+              fontWeight: '800',
+              color: '#1d4ed8',
+              fontFamily: "'Poppins', sans-serif",
+              lineHeight: 1.2,
+            }}>TaskFlow</div>
+            <div style={{
+              fontSize: '11px',
+              color: '#6b7280',
+              fontFamily: "'Poppins', sans-serif",
+              marginTop: '2px',
+            }}>App Admin Dashboard</div>
           </div>
-          <p style={{ color: '#555', fontSize: '13px' }}>
-            {isRegister ? 'Create a new account' : 'Sign in to your workspace'}
-          </p>
         </div>
 
-        {/* error */}
+        {/* Welcome heading */}
+        <h2 style={{
+          margin: '0 0 6px',
+          fontSize: '22px',
+          fontWeight: '700',
+          color: '#111827',
+          fontFamily: "'Poppins', sans-serif",
+        }}>
+          {isRegister ? 'Create account 🚀' : 'Welcome back 👋'}
+        </h2>
+        <p style={{
+          margin: '0 0 20px',
+          fontSize: '13px',
+          color: '#6b7280',
+          fontFamily: "'Poppins', sans-serif",
+        }}>
+          {isRegister
+            ? 'Fill in the details to get started'
+            : 'Sign in to your TaskFlow workspace'}
+        </p>
+
+        {/* Divider */}
+        <div style={{ height: '1px', background: '#e5e7eb', marginBottom: '24px' }} />
+
+        {/* Error */}
         {error && (
           <div style={{
-            background: 'rgba(239,68,68,0.08)',
-            border: '1px solid rgba(239,68,68,0.2)',
-            borderRadius: '8px', padding: '10px 14px',
-            marginBottom: '16px', fontSize: '13px',
-            color: '#ef4444', fontWeight: '500'
+            marginBottom: '16px',
+            padding: '10px 14px',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '10px',
+            fontSize: '12px',
+            color: '#dc2626',
+            fontWeight: '500',
+            fontFamily: "'Poppins', sans-serif",
           }}>
             {error}
           </div>
         )}
 
-        {/* form */}
-        <form onSubmit={handleSubmit} style={{
-          display: 'flex', flexDirection: 'column', gap: '16px'
-        }}>
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
           <div>
             <label style={labelStyle}>Email</label>
@@ -153,8 +212,14 @@ export default function Login() {
               placeholder="you@example.com"
               required
               style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
-              onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#1d4ed8'
+                e.target.style.background = '#ffffff'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#bfdbfe'
+                e.target.style.background = '#f0f9ff'
+              }}
             />
           </div>
 
@@ -167,8 +232,14 @@ export default function Login() {
               placeholder="••••••••"
               required
               style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = '#3d2c6e'}
-              onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#1d4ed8'
+                e.target.style.background = '#ffffff'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#bfdbfe'
+                e.target.style.background = '#f0f9ff'
+              }}
             />
           </div>
 
@@ -176,39 +247,63 @@ export default function Login() {
             type="submit"
             disabled={loading}
             style={{
-              width: '100%', padding: '12px',
-              background: 'linear-gradient(135deg, #5b3db5, #7c5cbf)',
-              border: 'none', borderRadius: '10px',
-              color: '#e8e8e8', fontSize: '14px',
-              fontWeight: '600',
+              width: '100%',
+              padding: '13px',
+              background: '#1d4ed8',
+              border: 'none',
+              borderRadius: '10px',
+              color: '#ffffff',
+              fontSize: '14px',
+              fontWeight: '700',
+              fontFamily: "'Poppins', sans-serif",
+              letterSpacing: '0.2px',
               cursor: loading ? 'not-allowed' : 'pointer',
-              marginTop: '4px',
+              marginTop: '8px',
               opacity: loading ? 0.7 : 1,
-              fontFamily: "'DM Sans', sans-serif"
+              boxShadow: '0 4px 14px rgba(29,78,216,0.35)',
+              transition: 'opacity 0.2s, transform 0.2s',
+              transform: 'translateY(0)',
             }}
-            onMouseEnter={(e) => { if (!loading) e.target.style.opacity = '0.88' }}
-            onMouseLeave={(e) => { if (!loading) e.target.style.opacity = '1' }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.target.style.opacity = '0.88'
+                e.target.style.transform = 'translateY(-1px)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!loading) {
+                e.target.style.opacity = '1'
+                e.target.style.transform = 'translateY(0)'
+              }
+            }}
           >
             {loading
               ? (isRegister ? 'Creating account...' : 'Signing in...')
-              : (isRegister ? 'Create Account' : 'Sign In')
-            }
+              : (isRegister ? 'Create Account' : 'Sign In')}
           </button>
 
         </form>
 
-        {/* divider */}
+        {/* Divider */}
         <div style={{
-          display: 'flex', alignItems: 'center',
-          gap: '12px', margin: '24px 0'
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          margin: '22px 0',
         }}>
-          <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
-          <span style={{ color: '#333', fontSize: '12px' }}>or</span>
-          <div style={{ flex: 1, height: '1px', background: '#1a1a1a' }} />
+          <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
+          <span style={{ color: '#9ca3af', fontSize: '12px', fontFamily: "'Poppins', sans-serif" }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
         </div>
 
-        {/* toggle */}
-        <p style={{ textAlign: 'center', fontSize: '13px', color: '#444' }}>
+        {/* Toggle */}
+        <p style={{
+          textAlign: 'center',
+          fontSize: '13px',
+          color: '#6b7280',
+          margin: 0,
+          fontFamily: "'Poppins', sans-serif",
+        }}>
           {isRegister ? 'Already have an account? ' : "Don't have an account? "}
           <span
             onClick={() => {
@@ -217,11 +312,37 @@ export default function Login() {
               setEmail('')
               setPassword('')
             }}
-            style={{ color: '#8b6cf0', cursor: 'pointer', fontWeight: '500' }}
+            style={{
+              color: '#1d4ed8',
+              cursor: 'pointer',
+              fontWeight: '600',
+            }}
           >
             {isRegister ? 'Sign In' : 'Register'}
           </span>
         </p>
+
+        {/* Security badge */}
+        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: '20px',
+            padding: '6px 14px',
+          }}>
+            <span style={{ fontSize: '12px' }}>🔒</span>
+            <span style={{
+              fontSize: '11px',
+              fontWeight: '600',
+              color: '#1d4ed8',
+              fontFamily: "'Poppins', sans-serif",
+              letterSpacing: '0.02em',
+            }}>Secured by TaskFlow</span>
+          </div>
+        </div>
 
       </div>
     </div>
