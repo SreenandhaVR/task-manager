@@ -28,9 +28,11 @@ async def register(data: UserRegister, db: AsyncSession = Depends(get_db)):
 
     db.add(new_user)
     await db.commit()
-    await db.refresh(new_user)
-    await db.refresh(new_user)
+
+    result = await db.execute(select(User).where(User.email == data.email))
+    new_user = result.scalar_one()
     return new_user
+
 
 @router.post("/login", response_model=Token)
 async def login(
