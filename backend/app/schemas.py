@@ -16,8 +16,7 @@ class UserOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     email: str
-    created_at: datetime
-
+    created_at: Optional[datetime] = None
 
 class TaskCreate(BaseModel):
     title: str
