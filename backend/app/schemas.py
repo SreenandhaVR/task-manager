@@ -8,15 +8,13 @@ class UserRegister(BaseModel):
     email: EmailStr
     password: str
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
 
 class UserOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     email: str
-    created_at: Optional[datetime] = None
+    created_at: datetime
+
 
 class TaskCreate(BaseModel):
     title: str
@@ -24,11 +22,13 @@ class TaskCreate(BaseModel):
     status: Optional[TaskStatus] = TaskStatus.todo
     assigned_to: Optional[int] = None
 
+
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     status: Optional[TaskStatus] = None
     assigned_to: Optional[int] = None
+
 
 class TaskOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -44,6 +44,7 @@ class TaskOut(BaseModel):
 class NoteCreate(BaseModel):
     content: str
     note_type: Optional[NoteType] = NoteType.user
+
 
 class NoteOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)

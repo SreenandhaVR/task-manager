@@ -11,7 +11,6 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
 @router.post("/", response_model=TaskOut)
-@router.post("/", response_model=TaskOut)
 async def create_task(
     data: TaskCreate,
     db: AsyncSession = Depends(get_db),
@@ -26,11 +25,9 @@ async def create_task(
     )
     db.add(task)
     await db.commit()
-
-    # Re-fetch from DB to get server-generated created_at
-    result = await db.execute(select(Task).where(Task.id == task.id))
-    task = result.scalar_one()
+    await db.refresh(task)
     return task
+
 
 @router.get("/", response_model=list[TaskOut])
 async def get_tasks(
@@ -81,10 +78,7 @@ async def update_task(
     if data.assigned_to is not None:
         task.assigned_to = data.assigned_to
     await db.commit()
-
-    # Re-fetch from DB
-    result = await db.execute(select(Task).where(Task.id == task_id))
-    task = result.scalar_one()
+    await db.refresh(task)
     return task
 
 
