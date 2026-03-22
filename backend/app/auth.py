@@ -1,53 +1,28 @@
-from fastapi import APIRouter, Depends, HTTPException, Form
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from app.database import get_db
-from app.models import User
-from app.schemas import UserRegister, UserOut, Token
-from app.auth import hash_password, verify_password, create_access_token
+from passlib.context import CryptContext
+from jose import jwt
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+load_dotenv()
 
-# OAuth2 scheme for protected routes (used in dependencies.py)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
-
-@router.post("/register", response_model=UserOut)
-async def register(data: UserRegister, db: AsyncSession = Depends(get_db)):
-
-    result = await db.execute(select(User).where(User.email == data.email))
-    existing_user = result.scalar_one_or_none()
-
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    new_user = User(
-        email=data.email,
-        password_hash=hash_password(data.password)
-    )
-
-    db.add(new_user)
-    await db.commit()
-    await db.refresh(new_user)
-
-    return new_user
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-# Login uses OAuth2 password flow with form fields
-# OAuth2PasswordRequestForm equivalent — accepts username + password as form data
-@router.post("/login", response_model=Token)
-async def login(
-    username: str = Form(...),
-    password: str = Form(...),
-    db: AsyncSession = Depends(get_db)
-):
-    result = await db.execute(select(User).where(User.email == username))
-    user = result.scalar_one_or_none()
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
 
-    if not user or not verify_password(password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    token = create_access_token(data={"sub": str(user.id)})
+def verify_password(plain: str, hashed: str) -> bool:
+    return pwd_context.verify(plain, hashed)
 
-    return {"access_token": token, "token_type": "bearer"}
+
+def create_access_token(data: dict) -> str:
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
