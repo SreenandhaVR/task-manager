@@ -69,3 +69,30 @@ async def update_task(
     result = await db.execute(select(Task).where(Task.id == task_id))
     task = result.scalar_one_or_none()
     if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    if data.title is not None:
+        task.title = data.title
+    if data.description is not None:
+        task.description = data.description
+    if data.status is not None:
+        task.status = data.status
+    if data.assigned_to is not None:
+        task.assigned_to = data.assigned_to
+    await db.commit()
+    await db.refresh(task)
+    return task
+
+
+@router.delete("/{task_id}")
+async def delete_task(
+    task_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    result = await db.execute(select(Task).where(Task.id == task_id))
+    task = result.scalar_one_or_none()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    await db.delete(task)
+    await db.commit()
+    return {"message": "Task deleted"}
