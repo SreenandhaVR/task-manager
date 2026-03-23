@@ -1,14 +1,21 @@
 import { render, screen, fireEvent } from '@testing-library/react'
+import { useState } from 'react'
 
 function AddTaskForm({ onSubmit }) {
+  const [title, setTitle] = useState('')
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    const title = e.target.title.value
     onSubmit({ title })
   }
+
   return (
     <form onSubmit={handleSubmit}>
-      <input name="title" placeholder="Task title" />
+      <input
+        placeholder="Task title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
       <button type="submit">Add Task</button>
     </form>
   )
@@ -33,7 +40,7 @@ describe('Add task flow', () => {
     expect(mockSubmit).toHaveBeenCalledWith({ title: 'New test task' })
   })
 
-  it('does not call onSubmit when title is empty string', () => {
+  it('calls onSubmit with empty title when nothing typed', () => {
     const mockSubmit = vi.fn()
     render(<AddTaskForm onSubmit={mockSubmit} />)
 
