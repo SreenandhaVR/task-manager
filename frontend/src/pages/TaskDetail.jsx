@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import {
+  ArrowLeft,
+  Trash2,
+  Bot,
+  User,
+  Plus,
+  Loader2,
+} from 'lucide-react'
 import api from '../api/axios'
 import useTaskStore from '../store/taskStore'
 
 const STATUS_OPTIONS = ['todo', 'in_progress', 'done']
+
+const poppins = "'Poppins', sans-serif"
 
 export default function TaskDetail() {
   const { id } = useParams()
@@ -63,177 +73,262 @@ export default function TaskDetail() {
     }
   }
 
+  /* ── Loading ── */
   if (loading) {
     return (
       <div style={{
-        minHeight: '100vh', background: '#0d0d0d',
-        display: 'flex', alignItems: 'center', justifyContent: 'center'
+        minHeight: '100vh', background: '#bfdbfe',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <div style={{
           width: '28px', height: '28px',
-          border: '2px solid #7c3aed',
-          borderTopColor: 'transparent',
+          border: '3px solid #bfdbfe',
+          borderTopColor: '#1d4ed8',
           borderRadius: '50%',
-          animation: 'spin 0.8s linear infinite'
+          animation: 'spin 0.8s linear infinite',
         }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
       </div>
     )
   }
 
+  /* ── Error ── */
   if (error || !task) {
     return (
       <div style={{
-        minHeight: '100vh', background: '#0d0d0d',
+        minHeight: '100vh', background: '#bfdbfe',
         display: 'flex', alignItems: 'center',
         justifyContent: 'center', flexDirection: 'column',
-        gap: '16px', fontFamily: "'DM Sans', sans-serif"
+        gap: '16px', fontFamily: poppins,
       }}>
-        <p style={{ color: '#555' }}>{error || 'Task not found'}</p>
+        <p style={{ color: '#6b7280', fontSize: '14px' }}>{error || 'Task not found'}</p>
         <button
           onClick={() => navigate('/')}
           style={{
-            background: 'none', border: '1px solid #333',
-            color: '#888', padding: '8px 16px',
-            borderRadius: '8px', cursor: 'pointer', fontSize: '13px'
+            background: '#ffffff', border: '1px solid #e5e7eb',
+            color: '#1d4ed8', padding: '8px 18px',
+            borderRadius: '10px', cursor: 'pointer',
+            fontSize: '13px', fontWeight: '600',
+            fontFamily: poppins,
           }}
         >
-          ← Back to Dashboard
+          Back to Dashboard
         </button>
       </div>
     )
   }
 
-  const statusColors = {
-    todo:        { bg: 'rgba(99,102,241,0.1)',  text: '#818cf8' },
-    in_progress: { bg: 'rgba(245,158,11,0.1)',  text: '#fbbf24' },
-    done:        { bg: 'rgba(16,185,129,0.1)',  text: '#34d399' },
+  /* ── Status badge colours ── */
+  const statusMap = {
+    todo:        { bg: '#eff6ff', text: '#1d4ed8', border: '#bfdbfe' },
+    in_progress: { bg: '#fffbeb', text: '#b45309', border: '#fde68a' },
+    done:        { bg: '#ecfdf5', text: '#065f46', border: '#a7f3d0' },
   }
 
+  /* ── Note type colours ── */
   const noteTypeColor = {
-    user: { bg: 'rgba(124,58,237,0.1)', text: '#a78bfa', border: 'rgba(124,58,237,0.2)' },
-    ai:   { bg: 'rgba(59,130,246,0.1)', text: '#60a5fa', border: 'rgba(59,130,246,0.2)' },
+    user: { bg: '#eff6ff',  text: '#1d4ed8', border: '#bfdbfe' },
+    ai:   { bg: '#f5f3ff',  text: '#6d28d9', border: '#ddd6fe' },
   }
+
+  const sc = statusMap[task.status]
 
   return (
     <div style={{
-      minHeight: '100vh', background: '#0d0d0d',
-      fontFamily: "'DM Sans', sans-serif", padding: '32px'
+      minHeight: '100vh',
+      background: '#bfdbfe',
+      fontFamily: poppins,
+      padding: '36px 24px',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+
+      {/* Decorative circles — match dashboard */}
+      <div style={{
+        position: 'fixed', top: '-100px', right: '-100px',
+        width: '400px', height: '400px', borderRadius: '50%',
+        background: '#ffffff', opacity: 0.3, pointerEvents: 'none', zIndex: 0,
+      }} />
+      <div style={{
+        position: 'fixed', bottom: '-60px', left: '-60px',
+        width: '250px', height: '250px', borderRadius: '50%',
+        background: '#ffffff', opacity: 0.2, pointerEvents: 'none', zIndex: 0,
+      }} />
+
+      <div style={{ maxWidth: '700px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
         {/* Back button */}
         <button
           onClick={() => navigate('/')}
           style={{
-            background: 'none', border: 'none',
-            color: '#555', cursor: 'pointer',
-            fontSize: '13px', marginBottom: '24px',
+            background: 'transparent', border: 'none',
+            color: '#6b7280', cursor: 'pointer',
+            fontSize: '13px', fontWeight: '500',
+            marginBottom: '24px',
             display: 'flex', alignItems: 'center', gap: '6px',
-            padding: 0
+            padding: 0, fontFamily: poppins,
+            transition: 'color 0.15s',
           }}
-          onMouseEnter={(e) => e.currentTarget.style.color = '#e8e8e8'}
-          onMouseLeave={(e) => e.currentTarget.style.color = '#555'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#1d4ed8'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#6b7280'}
         >
-          ← Back to Dashboard
+          <ArrowLeft size={15} />
+          Back to Dashboard
         </button>
 
         {/* Task card */}
         <div style={{
-          background: '#111111',
-          border: '1px solid #1e1e1e',
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
           borderRadius: '16px',
           padding: '28px',
-          marginBottom: '20px'
+          marginBottom: '16px',
+          boxShadow: '0 4px 24px rgba(29,78,216,0.08)',
         }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', marginBottom: '16px' }}>
+
+          {/* Title + delete */}
+          <div style={{
+            display: 'flex', alignItems: 'flex-start',
+            justifyContent: 'space-between', gap: '16px', marginBottom: '16px',
+          }}>
             <h1 style={{
-              color: '#e8e8e8', fontSize: '20px',
-              fontWeight: '700', margin: 0, lineHeight: '1.4'
+              color: '#111827', fontSize: '20px',
+              fontWeight: '700', margin: 0, lineHeight: '1.4',
+              fontFamily: poppins,
             }}>
               {task.title}
             </h1>
             <button
               onClick={handleDelete}
               style={{
-                background: 'rgba(239,68,68,0.08)',
-                border: '1px solid rgba(239,68,68,0.2)',
-                color: '#ef4444', cursor: 'pointer',
-                fontSize: '12px', padding: '6px 12px',
-                borderRadius: '8px', flexShrink: 0,
-                fontFamily: "'DM Sans', sans-serif"
+                background: '#fef2f2', border: '1px solid #fecaca',
+                color: '#dc2626', cursor: 'pointer',
+                fontSize: '12px', fontWeight: '600',
+                padding: '7px 14px', borderRadius: '8px',
+                flexShrink: 0, fontFamily: poppins,
+                display: 'flex', alignItems: 'center', gap: '5px',
+                transition: 'background 0.15s',
               }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#fee2e2'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#fef2f2'}
             >
+              <Trash2 size={13} />
               Delete
             </button>
           </div>
 
+          {/* Description */}
           {task.description && (
             <p style={{
-              color: '#666', fontSize: '14px',
-              lineHeight: '1.6', marginBottom: '20px'
+              color: '#6b7280', fontSize: '14px',
+              lineHeight: '1.7', marginBottom: '20px',
+              fontFamily: poppins,
             }}>
               {task.description}
             </p>
           )}
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+          {/* Meta row */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', flexWrap: 'wrap' }}>
+
+            {/* Status */}
             <div>
-              <p style={{ color: '#333', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>Status</p>
+              <p style={{
+                color: '#9ca3af', fontSize: '10px', fontWeight: '600',
+                textTransform: 'uppercase', letterSpacing: '0.08em',
+                marginBottom: '6px', fontFamily: poppins,
+              }}>Status</p>
               <select
                 value={task.status}
                 onChange={handleStatusChange}
                 style={{
-                  background: statusColors[task.status].bg,
-                  color: statusColors[task.status].text,
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: sc.bg,
+                  color: sc.text,
+                  border: `1px solid ${sc.border}`,
                   borderRadius: '8px', padding: '6px 12px',
-                  fontSize: '13px', fontWeight: '600',
+                  fontSize: '12px', fontWeight: '600',
                   cursor: 'pointer', outline: 'none',
-                  fontFamily: "'DM Sans', sans-serif"
+                  fontFamily: poppins,
+                  appearance: 'none',
                 }}
               >
                 {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s} style={{ background: '#111', color: '#e8e8e8' }}>
+                  <option key={s} value={s} style={{ background: '#fff', color: '#111827' }}>
                     {s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* Assigned to */}
             {task.assigned_to && (
               <div>
-                <p style={{ color: '#333', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>Assigned to</p>
-                <p style={{ color: '#888', fontSize: '13px' }}>User #{task.assigned_to}</p>
+                <p style={{
+                  color: '#9ca3af', fontSize: '10px', fontWeight: '600',
+                  textTransform: 'uppercase', letterSpacing: '0.08em',
+                  marginBottom: '6px', fontFamily: poppins,
+                }}>Assigned to</p>
+                <span style={{
+                  display: 'flex', alignItems: 'center', gap: '5px',
+                  color: '#6b7280', fontSize: '13px', fontFamily: poppins,
+                }}>
+                  <User size={13} color="#9ca3af" />
+                  User #{task.assigned_to}
+                </span>
               </div>
             )}
 
+            {/* Created by */}
             <div>
-              <p style={{ color: '#333', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>Created by</p>
-              <p style={{ color: '#888', fontSize: '13px' }}>User #{task.created_by}</p>
+              <p style={{
+                color: '#9ca3af', fontSize: '10px', fontWeight: '600',
+                textTransform: 'uppercase', letterSpacing: '0.08em',
+                marginBottom: '6px', fontFamily: poppins,
+              }}>Created by</p>
+              <span style={{
+                display: 'flex', alignItems: 'center', gap: '5px',
+                color: '#6b7280', fontSize: '13px', fontFamily: poppins,
+              }}>
+                <User size={13} color="#9ca3af" />
+                User #{task.created_by}
+              </span>
             </div>
+
           </div>
         </div>
 
-        {/* Notes section */}
+        {/* Notes card */}
         <div style={{
-          background: '#111111',
-          border: '1px solid #1e1e1e',
+          background: '#ffffff',
+          border: '1px solid #e5e7eb',
           borderRadius: '16px',
-          padding: '28px'
+          padding: '28px',
+          boxShadow: '0 4px 24px rgba(29,78,216,0.08)',
         }}>
-          <h2 style={{
-            color: '#e8e8e8', fontSize: '15px',
-            fontWeight: '600', marginBottom: '20px'
-          }}>
-            Notes
-            <span style={{ color: '#333', fontWeight: '400', fontSize: '13px', marginLeft: '8px' }}>
-              ({notes.length})
-            </span>
-          </h2>
 
+          {/* Notes header */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+            <h2 style={{
+              color: '#111827', fontSize: '15px',
+              fontWeight: '700', margin: 0, fontFamily: poppins,
+            }}>Notes</h2>
+            <span style={{
+              background: '#f0f9ff', color: '#1d4ed8',
+              fontSize: '11px', fontWeight: '600',
+              padding: '2px 8px', borderRadius: '20px',
+              border: '1px solid #bfdbfe', fontFamily: poppins,
+            }}>
+              {notes.length}
+            </span>
+          </div>
+
+          {/* Notes list */}
           {notes.length === 0 ? (
-            <p style={{ color: '#333', fontSize: '13px', textAlign: 'center', padding: '24px 0' }}>
+            <p style={{
+              color: '#9ca3af', fontSize: '13px',
+              textAlign: 'center', padding: '24px 0',
+              fontFamily: poppins,
+            }}>
               No notes yet
             </p>
           ) : (
@@ -247,19 +342,29 @@ export default function TaskDetail() {
                       background: c.bg,
                       border: `1px solid ${c.border}`,
                       borderRadius: '10px',
-                      padding: '14px 16px'
+                      padding: '14px 16px',
                     }}
                   >
-                    <div style={{ marginBottom: '6px' }}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: '6px',
+                      marginBottom: '8px',
+                    }}>
+                      {note.note_type === 'ai'
+                        ? <Bot size={13} color={c.text} />
+                        : <User size={13} color={c.text} />
+                      }
                       <span style={{
                         fontSize: '10px', fontWeight: '700',
-                        textTransform: 'uppercase', letterSpacing: '0.6px',
-                        color: c.text
+                        textTransform: 'uppercase', letterSpacing: '0.06em',
+                        color: c.text, fontFamily: poppins,
                       }}>
-                        {note.note_type === 'ai' ? '🤖 AI' : '👤 User'}
+                        {note.note_type === 'ai' ? 'AI' : 'User'}
                       </span>
                     </div>
-                    <p style={{ color: '#ccc', fontSize: '13px', lineHeight: '1.6', margin: 0 }}>
+                    <p style={{
+                      color: '#374151', fontSize: '13px',
+                      lineHeight: '1.6', margin: 0, fontFamily: poppins,
+                    }}>
                       {note.content}
                     </p>
                   </div>
@@ -268,28 +373,33 @@ export default function TaskDetail() {
             </div>
           )}
 
-          <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: '20px' }}>
+          {/* Add note section */}
+          <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
+
+            {/* Note type toggle */}
             <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
               {['user', 'ai'].map((t) => (
                 <button
                   key={t}
                   onClick={() => setNoteType(t)}
                   style={{
-                    padding: '5px 14px',
-                    borderRadius: '20px',
-                    border: `1px solid ${noteType === t ? 'rgba(124,58,237,0.5)' : '#222'}`,
-                    background: noteType === t ? 'rgba(124,58,237,0.15)' : 'transparent',
-                    color: noteType === t ? '#a78bfa' : '#444',
-                    fontSize: '12px', fontWeight: '500',
-                    cursor: 'pointer',
-                    fontFamily: "'DM Sans', sans-serif"
+                    padding: '5px 14px', borderRadius: '20px',
+                    border: noteType === t ? '1px solid #bfdbfe' : '1px solid #e5e7eb',
+                    background: noteType === t ? '#eff6ff' : 'transparent',
+                    color: noteType === t ? '#1d4ed8' : '#9ca3af',
+                    fontSize: '12px', fontWeight: noteType === t ? '600' : '400',
+                    cursor: 'pointer', fontFamily: poppins,
+                    display: 'flex', alignItems: 'center', gap: '5px',
+                    transition: 'all 0.15s',
                   }}
                 >
-                  {t === 'ai' ? '🤖 AI' : '👤 User'}
+                  {t === 'ai' ? <Bot size={12} /> : <User size={12} />}
+                  {t === 'ai' ? 'AI' : 'User'}
                 </button>
               ))}
             </div>
 
+            {/* Textarea */}
             <textarea
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
@@ -297,34 +407,58 @@ export default function TaskDetail() {
               rows={3}
               style={{
                 width: '100%', padding: '12px 14px',
-                background: '#0d0d0d',
-                border: '1px solid #1e1e1e',
-                borderRadius: '10px', color: '#e8e8e8',
+                background: '#f0f9ff',
+                border: '1px solid #bfdbfe',
+                borderRadius: '10px', color: '#111827',
                 fontSize: '13px', resize: 'none',
                 outline: 'none', boxSizing: 'border-box',
-                lineHeight: '1.5',
-                fontFamily: "'DM Sans', sans-serif",
-                marginBottom: '12px'
+                lineHeight: '1.5', fontFamily: poppins,
+                marginBottom: '12px',
+                transition: 'border 0.2s, background 0.2s',
               }}
-              onFocus={(e) => e.target.style.borderColor = '#7c3aed'}
-              onBlur={(e) => e.target.style.borderColor = '#1e1e1e'}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#1d4ed8'
+                e.target.style.background = '#ffffff'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#bfdbfe'
+                e.target.style.background = '#f0f9ff'
+              }}
             />
 
+            {/* Add note button */}
             <button
               onClick={handleAddNote}
               disabled={addingNote || !noteText.trim()}
               style={{
-                background: 'linear-gradient(135deg, #5b3db5, #7c5cbf)',
-                border: 'none', borderRadius: '8px',
-                color: '#e8e8e8', fontSize: '13px',
-                fontWeight: '600', padding: '10px 20px',
+                background: '#1d4ed8', border: 'none',
+                borderRadius: '10px', color: '#ffffff',
+                fontSize: '13px', fontWeight: '700',
+                letterSpacing: '0.2px', padding: '10px 20px',
                 cursor: addingNote || !noteText.trim() ? 'not-allowed' : 'pointer',
                 opacity: addingNote || !noteText.trim() ? 0.5 : 1,
-                fontFamily: "'DM Sans', sans-serif"
+                fontFamily: poppins,
+                display: 'flex', alignItems: 'center', gap: '6px',
+                boxShadow: addingNote || !noteText.trim() ? 'none' : '0 4px 14px rgba(29,78,216,0.30)',
+                transition: 'opacity 0.2s, transform 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                if (!addingNote && noteText.trim()) {
+                  e.currentTarget.style.opacity = '0.88'
+                  e.currentTarget.style.transform = 'translateY(-1px)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = addingNote || !noteText.trim() ? '0.5' : '1'
+                e.currentTarget.style.transform = 'translateY(0)'
               }}
             >
-              {addingNote ? 'Adding...' : 'Add Note'}
+              {addingNote
+                ? <><Loader2 size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> Adding...</>
+                : <><Plus size={14} /> Add Note</>
+              }
             </button>
+
           </div>
         </div>
 
